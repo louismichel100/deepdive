@@ -125,16 +125,25 @@ services:
   # docker ps -a
   
   docker:
+    build:
+      context: .
     hostname: docker
     container_name: docker
-      #image: docker:20.10-dind
-    image: spurin/diveintoansible:dind
+       # image: spurin/diveintoansible:dind
+    image: jamesmishra/dind
     privileged: true
+    ports:
+      - 2375:22
+      - 2376:22
     volumes:
       - ${ANSIBLE_HOME}/shared:/shared
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - 2375:2375
+      - 2376:2376
     networks:
       - diveinto.io
-
+  
       
 
   portal:
@@ -143,7 +152,7 @@ services:
     image: spurin/diveintoansible:portal
     environment:
      - NGINX_ENTRYPOINT_QUIET_LOGS=1
-     - LOCALHOST_OVERRIDE=54.229.244.89
+     - LOCALHOST_OVERRIDE=34.247.219.73
     depends_on:
      - centos1
      - centos2
@@ -151,7 +160,6 @@ services:
      - ubuntu1
      - ubuntu2
      - ubuntu3
-     - docker
     ports:
      - "1000:80"
     networks:
